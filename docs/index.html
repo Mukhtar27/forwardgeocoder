@@ -14,15 +14,17 @@
 
     <div class="input-group">
       <label for="apiKey">Google Maps API Key</label>
-      <div class="password-box">
+      <div class="password-box inline-password">
         <input type="password" id="apiKey" placeholder="Enter your API Key" />
-        <button id="toggleApiKey" class="toggle-button" aria-label="Toggle API visibility">🔓</button>
+        <button id="toggleApiKey" class="toggle-button" aria-label="Toggle API visibility">🔒</button>
       </div>
     </div>
 
     <div id="drop-area">
       <p>📂 Drag & drop your Excel file here or <span class="browse-text">click to browse</span></p>
       <input type="file" id="fileElem" accept=".xlsx,.xls" />
+      <span id="fileNameDisplay"></span>
+      <button id="clearFileBtn" class="clear-btn" title="Clear selected file">❌</button>
     </div>
 
     <div id="preview-container">
@@ -36,9 +38,9 @@
     </div>
 
     <div id="action-buttons" class="hidden">
-      <button id="geocodeBtn" class="action-btn">Geocode Addresses</button>
-      <button id="downloadBtn" class="action-btn hidden">Download .xlsx</button>
-      <button id="resetBtn" class="action-btn secondary">Reset</button>
+      <button id="geocodeBtn" class="action-btn primary">🚀 Geocode Addresses</button>
+      <button id="downloadBtn" class="action-btn hidden">⬇️ Download .xlsx</button>
+      <button id="resetBtn" class="action-btn secondary">🔄 Reset</button>
     </div>
   </div>
 </body>
