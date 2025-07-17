@@ -1,0 +1,142 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #f9f9f9;
+  color: #333;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #0c59cf;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+#apiKey {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.password-box {
+  position: relative;
+}
+
+.eye-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+
+#drop-area {
+  border: 2px dashed #ccc;
+  padding: 30px;
+  text-align: center;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+#drop-area:hover {
+  background: #f0f8ff;
+}
+
+#fileElem {
+  display: block;
+  margin: 10px auto;
+}
+
+.browse-text {
+  color: #0c59cf;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#addressColumnContainer {
+  margin-bottom: 20px;
+}
+
+#addressColumnContainer label {
+  font-weight: bold;
+}
+
+#addressSelect {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+#preview-container h2 {
+  font-size: 1.4em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#tablePreview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+#tablePreview th,
+#tablePreview td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+#tablePreview th {
+  background: #0c59cf;
+  color: white;
+}
+
+.button-bar {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.button-bar button {
+  padding: 10px 16px;
+  font-size: 15px;
+  background: #0c59cf;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.button-bar button:hover {
+  background: #094db6;
+}
+
+.hidden {
+  display: none;
+}

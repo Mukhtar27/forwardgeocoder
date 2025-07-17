@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📍 Excel Address Geocoder</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="script.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/xlsx.mjs" type="module"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>📍 Address Geocoder</h1>
+
+    <div class="input-group">
+      <label for="apiKey">Google Maps API Key</label>
+      <div class="password-box">
+        <input type="password" id="apiKey" placeholder="Enter your API Key" />
+        <button id="toggleApiKey" class="toggle-button" aria-label="Toggle API visibility">🔓</button>
+      </div>
+    </div>
+
+    <div id="drop-area">
+      <p>📂 Drag & drop your Excel file here or <span class="browse-text">click to browse</span></p>
+      <input type="file" id="fileElem" accept=".xlsx,.xls" />
+    </div>
+
+    <div id="preview-container">
+      <h2>📊 Excel Preview</h2>
+      <div id="tablePreview"></div>
+    </div>
+
+    <div id="addressColumnContainer" class="hidden">
+      <label for="addressSelect">Select Address Column:</label>
+      <select id="addressSelect"></select>
+    </div>
+
+    <div id="action-buttons" class="hidden">
+      <button id="geocodeBtn" class="action-btn">Geocode Addresses</button>
+      <button id="downloadBtn" class="action-btn hidden">Download .xlsx</button>
+      <button id="resetBtn" class="action-btn secondary">Reset</button>
+    </div>
+  </div>
+</body>
+</html>
+
