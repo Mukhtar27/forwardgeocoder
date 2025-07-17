@@ -1,152 +1,147 @@
-import * as XLSX from 'https://cdn.sheetjs.com/xlsx-0.20.0/package/xlsx.mjs';
+// script.js
 
-let workbook, selectedSheet, jsonData = [];
-let apiKeyVisible = false;
+import * as XLSX from "https://cdn.sheetjs.com/xlsx-0.20.0/package/xlsx.mjs";
 
-const apiKeyInput = document.getElementById("apiKey");
-const eyeBtn = document.getElementById("toggleApiKey");
-eyeBtn.innerHTML = "🔓";
-
-eyeBtn.addEventListener("click", () => {
-  apiKeyVisible = !apiKeyVisible;
-  apiKeyInput.type = apiKeyVisible ? "text" : "password";
-  eyeBtn.innerHTML = apiKeyVisible ? "🔒" : "🔓";
-});
-
-const dropArea = document.getElementById("drop-area");
-const fileInput = document.getElementById("fileElem");
+let workbook, sheetData;
+const fileElem = document.getElementById("fileElem");
+const fileNameDisplay = document.getElementById("fileNameDisplay");
+const clearFileBtn = document.getElementById("clearFileBtn");
 const tablePreview = document.getElementById("tablePreview");
-const addressSelect = document.getElementById("addressSelect");
-const addressColumnContainer = document.getElementById("addressColumnContainer");
+const dropArea = document.getElementById("drop-area");
 const geocodeBtn = document.getElementById("geocodeBtn");
 const resetBtn = document.getElementById("resetBtn");
 const downloadBtn = document.getElementById("downloadBtn");
+const addressSelect = document.getElementById("addressSelect");
+const addressColumnContainer = document.getElementById("addressColumnContainer");
 const actionButtons = document.getElementById("action-buttons");
+const apiKeyInput = document.getElementById("apiKey");
+const toggleApiKey = document.getElementById("toggleApiKey");
 
-["dragenter", "dragover", "dragleave", "drop"].forEach(event => {
-  dropArea.addEventListener(event, e => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, false);
+// 🔒 API Toggle logic
+toggleApiKey.addEventListener("click", () => {
+  const type = apiKeyInput.getAttribute("type");
+  if (type === "password") {
+    apiKeyInput.setAttribute("type", "text");
+    toggleApiKey.textContent = "🔓";
+  } else {
+    apiKeyInput.setAttribute("type", "password");
+    toggleApiKey.textContent = "🔒";
+  }
 });
 
-dropArea.addEventListener("drop", handleDrop, false);
-fileInput.addEventListener("change", handleFile, false);
-geocodeBtn.addEventListener("click", geocodeAddresses);
-resetBtn.addEventListener("click", resetApp);
-downloadBtn.addEventListener("click", downloadExcel);
+// 📂 Drag & Drop
+dropArea.addEventListener("click", () => fileElem.click());
 
-function handleDrop(e) {
-  const files = e.dataTransfer.files;
-  if (files.length > 0) readExcel(files[0]);
-}
+dropArea.addEventListener("dragover", e => {
+  e.preventDefault();
+  dropArea.classList.add("highlight");
+});
 
-function handleFile(e) {
-  const file = e.target.files[0];
-  if (file) readExcel(file);
-}
+dropArea.addEventListener("dragleave", () => dropArea.classList.remove("highlight"));
 
-function readExcel(file) {
+dropArea.addEventListener("drop", e => {
+  e.preventDefault();
+  dropArea.classList.remove("highlight");
+  handleFile(e.dataTransfer.files[0]);
+});
+
+fileElem.addEventListener("change", () => {
+  if (fileElem.files.length > 0) handleFile(fileElem.files[0]);
+});
+
+clearFileBtn.addEventListener("click", () => {
+  fileElem.value = "";
+  fileNameDisplay.textContent = "";
+  clearFileBtn.style.display = "none";
+  tablePreview.innerHTML = "";
+  addressColumnContainer.classList.add("hidden");
+  actionButtons.classList.add("hidden");
+});
+
+// 📄 Handle file and preview
+function handleFile(file) {
   const reader = new FileReader();
-  reader.onload = function (e) {
+  reader.onload = (e) => {
     const data = new Uint8Array(e.target.result);
-    workbook = XLSX.read(data, { type: 'array' });
+    workbook = XLSX.read(data, { type: "array" });
     const sheetName = workbook.SheetNames[0];
-    selectedSheet = workbook.Sheets[sheetName];
-    jsonData = XLSX.utils.sheet_to_json(selectedSheet);
-    populateColumnSelector(Object.keys(jsonData[0]));
-    previewTable(jsonData);
+    sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+    displayTable(sheetData);
+    populateAddressOptions(sheetData[0]);
     addressColumnContainer.classList.remove("hidden");
     actionButtons.classList.remove("hidden");
-    downloadBtn.classList.add("hidden"); // Hide initially
+    fileNameDisplay.textContent = file.name;
+    clearFileBtn.style.display = "inline-block";
   };
   reader.readAsArrayBuffer(file);
 }
 
-function populateColumnSelector(columns) {
-  addressSelect.innerHTML = "";
-  columns.forEach(col => {
-    const option = document.createElement("option");
-    option.value = col;
-    option.textContent = col;
-    addressSelect.appendChild(option);
+// 🧾 Display table preview
+function displayTable(data) {
+  let html = `<table><thead><tr>${data[0].map(col => `<th>${col}</th>`).join("")}</tr></thead><tbody>`;
+  data.slice(1, 6).forEach(row => {
+    html += `<tr>${data[0].map((_, i) => `<td>${row[i] || ""}</td>`).join("")}</tr>`;
   });
+  html += "</tbody></table>";
+  tablePreview.innerHTML = html;
 }
 
-function previewTable(data) {
-  tablePreview.innerHTML = "";
-  const table = document.createElement("table");
-  const thead = document.createElement("thead");
-  const headerRow = document.createElement("tr");
-
-  Object.keys(data[0]).forEach(key => {
-    const th = document.createElement("th");
-    th.textContent = key;
-    headerRow.appendChild(th);
-  });
-
-  thead.appendChild(headerRow);
-  table.appendChild(thead);
-
-  const tbody = document.createElement("tbody");
-  data.forEach(row => {
-    const tr = document.createElement("tr");
-    Object.values(row).forEach(val => {
-      const td = document.createElement("td");
-      td.textContent = val;
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
-  });
-
-  table.appendChild(tbody);
-  tablePreview.appendChild(table);
+// 📍 Populate address column selector
+function populateAddressOptions(headers) {
+  addressSelect.innerHTML = headers.map(h => `<option value="${h}">${h}</option>`).join("");
 }
 
-async function geocodeAddresses() {
+// 📡 Geocode logic
+geocodeBtn.addEventListener("click", async () => {
+  const addressColumn = addressSelect.value;
+  const headers = sheetData[0];
+  const addressIdx = headers.indexOf(addressColumn);
+  if (addressIdx === -1) return alert("Address column not found.");
+
   const apiKey = apiKeyInput.value.trim();
-  const addressCol = addressSelect.value;
+  if (!apiKey) return alert("Please enter your API key.");
 
-  if (!apiKey || !addressCol) {
-    alert("Please provide API Key and select Address column.");
-    return;
-  }
-
-  for (let row of jsonData) {
-    const address = row[addressCol];
-    if (!address) continue;
-
-    const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`);
-    const result = await response.json();
-
-    if (result.status === "OK" && result.results.length > 0) {
-      const location = result.results[0].geometry.location;
-      row["Latitude"] = location.lat;
-      row["Longitude"] = location.lng;
-    } else {
-      row["Latitude"] = "N/A";
-      row["Longitude"] = "N/A";
+  const updatedData = [headers.concat(["Latitude", "Longitude"])];
+  for (let i = 1; i < sheetData.length; i++) {
+    const row = sheetData[i];
+    const address = row[addressIdx];
+    try {
+      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`);
+      const data = await res.json();
+      const location = data.results?.[0]?.geometry?.location;
+      updatedData.push(row.concat(location ? [location.lat, location.lng] : ["", ""]));
+    } catch {
+      updatedData.push(row.concat(["", ""]));
     }
   }
 
-  previewTable(jsonData);
-  downloadBtn.classList.remove("hidden"); // Show after geocoding
-}
+  const ws = XLSX.utils.aoa_to_sheet(updatedData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Geocoded");
+  const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+  const blob = new Blob([wbout], { type: "application/octet-stream" });
+  downloadBtn.classList.remove("hidden");
+  downloadBtn.onclick = () => {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "geocoded_addresses.xlsx";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+});
 
-function downloadExcel() {
-  const newSheet = XLSX.utils.json_to_sheet(jsonData);
-  const newWb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(newWb, newSheet, "Geocoded");
-  XLSX.writeFile(newWb, "geocoded_results.xlsx");
-}
-
-function resetApp() {
-  workbook = null;
-  selectedSheet = null;
-  jsonData = [];
+// 🔄 Reset app
+resetBtn.addEventListener("click", () => {
+  apiKeyInput.value = "";
+  fileElem.value = "";
+  fileNameDisplay.textContent = "";
+  clearFileBtn.style.display = "none";
   tablePreview.innerHTML = "";
   addressSelect.innerHTML = "";
-  fileInput.value = "";
   addressColumnContainer.classList.add("hidden");
   actionButtons.classList.add("hidden");
-}
+  downloadBtn.classList.add("hidden");
+  toggleApiKey.textContent = "🔒";
+  apiKeyInput.type = "password";
+});
