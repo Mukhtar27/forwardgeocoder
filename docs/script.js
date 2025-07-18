@@ -55,7 +55,8 @@ fileElem.addEventListener("change", () => {
   if (fileElem.files.length > 0) handleFile(fileElem.files[0]);
 });
 
-clearFileBtn.addEventListener("click", () => {
+clearFileBtn.addEventListener("click", (e) => {
+  e.stopPropagation();  // 🛑 Prevent triggering dropArea click
   fileElem.value = "";
   fileNameDisplay.textContent = "";
   clearFileBtn.style.display = "none";
