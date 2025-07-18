@@ -76,4 +76,66 @@ button:hover {
   transform: scale(1.03);
 }
 
-button:di
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: var(--box-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+#drop-area {
+  border: 2px dashed var(--border);
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  background-color: var(--secondary);
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#drop-area.highlight {
+  background-color: var(--hover);
+}
+
+#tablePreview {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+table th,
+table td {
+  border: 1px solid var(--border);
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.api-key-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.toggle-icon {
+  font-size: 1.2rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.hidden {
+  display: none !important;
+}
