@@ -1,5 +1,3 @@
-// script.js
-
 import * as XLSX from "https://cdn.sheetjs.com/xlsx-0.20.0/package/xlsx.mjs";
 
 let workbook, sheetData;
@@ -29,8 +27,16 @@ toggleApiKey.addEventListener("click", () => {
   }
 });
 
-// 📂 Drag & Drop
-dropArea.addEventListener("click", () => fileElem.click());
+// 📂 Drag & Drop and File Upload Trigger Fix
+let preventDoubleClick = false;
+
+dropArea.addEventListener("click", () => {
+  if (!preventDoubleClick) {
+    preventDoubleClick = true;
+    fileElem.click();
+    setTimeout(() => preventDoubleClick = false, 500);
+  }
+});
 
 dropArea.addEventListener("dragover", e => {
   e.preventDefault();
@@ -133,11 +139,8 @@ geocodeBtn.addEventListener("click", async () => {
 
 // 🔄 Reset app
 resetBtn.addEventListener("click", () => {
-  // Clear input fields
   apiKeyInput.value = "";
-  fileElem.value = null;
-
-  // Reset visuals
+  fileElem.value = "";
   fileNameDisplay.textContent = "";
   clearFileBtn.style.display = "none";
   tablePreview.innerHTML = "";
@@ -147,8 +150,4 @@ resetBtn.addEventListener("click", () => {
   downloadBtn.classList.add("hidden");
   toggleApiKey.textContent = "🔒";
   apiKeyInput.type = "password";
-
-  // Reset internal state
-  workbook = null;
-  sheetData = null;
 });
