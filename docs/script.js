@@ -133,8 +133,11 @@ geocodeBtn.addEventListener("click", async () => {
 
 // 🔄 Reset app
 resetBtn.addEventListener("click", () => {
+  // Clear input fields
   apiKeyInput.value = "";
-  fileElem.value = "";
+  fileElem.value = null;
+
+  // Reset visuals
   fileNameDisplay.textContent = "";
   clearFileBtn.style.display = "none";
   tablePreview.innerHTML = "";
@@ -144,4 +147,8 @@ resetBtn.addEventListener("click", () => {
   downloadBtn.classList.add("hidden");
   toggleApiKey.textContent = "🔒";
   apiKeyInput.type = "password";
+
+  // Reset internal state
+  workbook = null;
+  sheetData = null;
 });
