@@ -7,11 +7,11 @@ const clearFileBtn = document.getElementById("clearFileBtn");
 const tablePreview = document.getElementById("tablePreview");
 const dropArea = document.getElementById("drop-area");
 const geocodeBtn = document.getElementById("geocodeBtn");
-const resetBtn = document.getElementById("resetBtn");
+const resetBtn = document.getElementById("resetBtn"); // Optional - include in HTML if used
 const downloadBtn = document.getElementById("downloadBtn");
 const addressSelect = document.getElementById("addressSelect");
 const addressColumnContainer = document.getElementById("addressColumnContainer");
-const actionButtons = document.getElementById("action-buttons");
+const actionButtons = document.getElementById("actionButtons"); // ✅ Corrected ID
 const apiKeyInput = document.getElementById("apiKey");
 const toggleApiKey = document.getElementById("toggleApiKey");
 
@@ -57,12 +57,7 @@ fileElem.addEventListener("change", () => {
 
 clearFileBtn.addEventListener("click", (e) => {
   e.stopPropagation();  // 🛑 Prevent triggering dropArea click
-  fileElem.value = "";
-  fileNameDisplay.textContent = "";
-  clearFileBtn.style.display = "none";
-  tablePreview.innerHTML = "";
-  addressColumnContainer.classList.add("hidden");
-  actionButtons.classList.add("hidden");
+  resetApp();
 });
 
 // 📄 Handle file and preview
@@ -139,8 +134,7 @@ geocodeBtn.addEventListener("click", async () => {
 });
 
 // 🔄 Reset app
-
-resetBtn.addEventListener("click", () => {
+function resetApp() {
   workbook = null;
   sheetData = null;
   apiKeyInput.value = "";
@@ -154,5 +148,8 @@ resetBtn.addEventListener("click", () => {
   downloadBtn.classList.add("hidden");
   toggleApiKey.textContent = "🔒";
   apiKeyInput.type = "password";
-});
+}
 
+if (resetBtn) {
+  resetBtn.addEventListener("click", resetApp);
+}
