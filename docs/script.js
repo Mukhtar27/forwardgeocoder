@@ -138,7 +138,10 @@ geocodeBtn.addEventListener("click", async () => {
 });
 
 // 🔄 Reset app
+
 resetBtn.addEventListener("click", () => {
+  workbook = null;
+  sheetData = null;
   apiKeyInput.value = "";
   fileElem.value = "";
   fileNameDisplay.textContent = "";
@@ -151,3 +154,4 @@ resetBtn.addEventListener("click", () => {
   toggleApiKey.textContent = "🔒";
   apiKeyInput.type = "password";
 });
+
