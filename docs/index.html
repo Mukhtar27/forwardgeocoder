@@ -1,51 +1,217 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Excel Address Geocoder</title>
-  <link rel="stylesheet" href="style.css"/>
-</head>
-<body>
-  <div class="container">
-    <h1>📍 Excel Address Geocoder</h1>
+/* Import Roboto Font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-    <!-- 🔽 File Upload Area -->
-    <div id="drop-area">
-      <p>📂 Drag & drop your Excel file here or click to browse</p>
-      <input type="file" id="fileElem" accept=".xlsx, .xls" hidden />
-      <div id="fileNameDisplay"></div>
-      <button id="clearFileBtn" class="hidden">❌ Clear File</button>
-    </div>
+/* Global Styling */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  background-color: #f5f6fa;
+  color: #333;
+  transition: background-color 0.3s, color 0.3s;
+}
 
-    <!-- 📊 Excel Preview -->
-    <div id="tablePreview"></div>
+body.dark-mode {
+  background-color: #1e1e2f;
+  color: #f5f5f5;
+}
 
-    <!-- 🔧 Address Column Selector -->
-    <div id="addressColumnContainer" class="hidden">
-      <label for="addressSelect">Select Address Column:</label>
-      <select id="addressSelect"></select>
-    </div>
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transition: background 0.3s;
+}
 
-    <!-- 🔐 API Key Input -->
-    <div class="api-input">
-      <label for="apiKey">Enter Google Maps API Key:</label>
-      <div class="api-key-box">
-        <input type="password" id="apiKey" placeholder="Enter your API key" />
-        <span id="toggleApiKey" class="toggle-icon">🔒</span>
-      </div>
-    </div>
+body.dark-mode .container {
+  background: #2c2c3a;
+}
 
-    <!-- ⚙️ Action Buttons -->
-    <div id="action-buttons" class="hidden action-section">
-      <button id="geocodeBtn" class="primary">🌍 Geocode Addresses</button>
-      <button id="resetBtn" class="secondary">🔄 Reset</button>
-    </div>
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+}
 
-    <!-- 📥 Download -->
-    <button id="downloadBtn" class="hidden">⬇️ Download Geocoded Excel</button>
-  </div>
+body.dark-mode h1 {
+  color: #f5f5f5;
+}
 
-  <script type="module" src="script.js"></script>
-</body>
-</html>
+/* 🔽 Drop Zone */
+#drop-area {
+  border: 2px dashed #a0aec0;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+  background-color: #fafafa;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+body.dark-mode #drop-area {
+  background-color: #3b3b4f;
+  border-color: #777;
+}
+
+#drop-area:hover {
+  background-color: #f0f0f0;
+}
+
+body.dark-mode #drop-area:hover {
+  background-color: #4b4b5c;
+}
+
+#drop-area p {
+  margin: 0;
+  font-size: 16px;
+  color: #666;
+}
+
+body.dark-mode #drop-area p {
+  color: #ccc;
+}
+
+#fileNameDisplay {
+  margin-top: 10px;
+  font-style: italic;
+}
+
+#clearFileBtn {
+  margin-top: 10px;
+  background: #e74c3c;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#clearFileBtn:hover {
+  background-color: #c0392b;
+}
+
+#clearFileBtn.hidden {
+  display: none;
+}
+
+/* 📊 Preview Table */
+#tablePreview {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+/* 📍 Address Select */
+#addressColumnContainer {
+  margin-bottom: 20px;
+}
+
+#addressSelect {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  width: 100%;
+  border: 1px solid #ccc;
+}
+
+body.dark-mode #addressSelect {
+  background-color: #333;
+  color: white;
+  border: 1px solid #777;
+}
+
+/* 🔐 API Key Box */
+.api-input {
+  margin-bottom: 20px;
+}
+
+.api-key-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.api-key-box input {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+body.dark-mode .api-key-box input {
+  background-color: #333;
+  color: white;
+  border: 1px solid #777;
+}
+
+.toggle-icon {
+  cursor: pointer;
+  font-size: 18px;
+  user-select: none;
+}
+
+/* 🔘 Buttons */
+button {
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.primary {
+  background-color: #2ecc71;
+  color: white;
+  margin-right: 10px;
+}
+
+.primary:hover {
+  background-color: #27ae60;
+}
+
+.secondary {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.secondary:hover {
+  background-color: #7f8c8d;
+}
+
+#downloadBtn {
+  margin-top: 20px;
+  width: 100%;
+  background-color: #3498db;
+  color: white;
+}
+
+#downloadBtn:hover {
+  background-color: #2980b9;
+}
+
+button.hidden {
+  display: none;
+}
+
+/* Responsive (Optional) */
+@media screen and (max-width: 600px) {
+  .api-key-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
